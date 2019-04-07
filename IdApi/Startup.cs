@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace IdApi
 {
@@ -16,10 +17,13 @@ namespace IdApi
         public IHostingEnvironment Environment { get; }
         public IConfiguration Configuration { get; }
 
-        public Startup(IHostingEnvironment environment, IConfiguration configuration)
+        public ILogger Logger { get; }
+
+        public Startup(IHostingEnvironment environment, IConfiguration configuration, ILogger<Startup> logger)
         {
             Environment = environment;
             Configuration = configuration;
+            Logger = logger;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -36,21 +40,21 @@ namespace IdApi
             {
                 builder.AddDeveloperSigningCredential();
             }
-            //else
-            //{
-            //    X509Certificate2 cert = GetCertificate();
+            else
+            {
+                X509Certificate2 cert = GetCertificate();
 
-            //    if(cert == null)
-            //    {
-            //        builder.AddDeveloperSigningCredential();
-            //    }
-            //    else
-            //    {
-            //        builder.AddSigningCredential(cert);
-                    
-            //        //builder.AddValidationKeys(new Microsoft.IdentityModel.Tokens.X509SecurityKey(cert));
-            //    }
-            //}
+                if (cert == null)
+                {
+                    builder.AddDeveloperSigningCredential();
+                }
+                else
+                {
+                    builder.AddSigningCredential(cert);
+
+                    //builder.AddValidationKeys(new Microsoft.IdentityModel.Tokens.X509SecurityKey(cert));
+                }
+            }
         }
 
         public void Configure(IApplicationBuilder app)
@@ -73,22 +77,32 @@ namespace IdApi
         {
             X509Certificate2 cert = null;
 
-            using (X509Store certStore = new X509Store(StoreName.My, StoreLocation.CurrentUser))
+            try
             {
-                certStore.Open(OpenFlags.ReadOnly);
 
-                X509Certificate2Collection certCollection = certStore.Certificates.Find(
-                    X509FindType.FindByThumbprint,
-                    Configuration["PrimaryCertThumbprint"],
-                    false);
-
-                if (certCollection.Count > 0)
+                using (X509Store certStore = new X509Store(StoreName.My, StoreLocation.CurrentUser))
                 {
-                    cert = certCollection[0];
-                    //Log.Logger.Information($"Successfully loaded cert from registry: {cert.Thumbprint}");
+                    certStore.Open(OpenFlags.ReadOnly);
+
+                    X509Certificate2Collection certCollection = certStore.Certificates.Find(
+                        X509FindType.FindByThumbprint,
+                        Configuration["PrimaryCertThumbprint"],
+                        false);
+
+                    if (certCollection.Count > 0)
+                    {
+                        cert = certCollection[0];
+                        //Log.Logger.Information($"Successfully loaded cert from registry: {cert.Thumbprint}");
+                    }
+
+                    return cert;
                 }
-                
-                return cert;
+            }
+            catch(Exception ex)
+            {
+                Logger.LogError(ex, "Error getting certificate from store");
+
+                return null;
             }
         }
     }
