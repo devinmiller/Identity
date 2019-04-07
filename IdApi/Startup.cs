@@ -86,7 +86,7 @@ namespace IdApi
 
                     X509Certificate2Collection certCollection = certStore.Certificates.Find(
                         X509FindType.FindByThumbprint,
-                        Configuration["PrimaryCertThumbprint"],
+                        "B2E1E2C93182DC45C1EAE43F56F851D26D85479C",
                         false);
 
                     if (certCollection.Count > 0)
