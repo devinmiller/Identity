@@ -36,21 +36,21 @@ namespace IdApi
             {
                 builder.AddDeveloperSigningCredential();
             }
-            else
-            {
-                X509Certificate2 cert = GetCertificate();
+            //else
+            //{
+            //    X509Certificate2 cert = GetCertificate();
 
-                if(cert == null)
-                {
-                    builder.AddDeveloperSigningCredential();
-                }
-                else
-                {
-                    builder.AddSigningCredential(cert);
+            //    if(cert == null)
+            //    {
+            //        builder.AddDeveloperSigningCredential();
+            //    }
+            //    else
+            //    {
+            //        builder.AddSigningCredential(cert);
                     
-                    //builder.AddValidationKeys(new Microsoft.IdentityModel.Tokens.X509SecurityKey(cert));
-                }
-            }
+            //        //builder.AddValidationKeys(new Microsoft.IdentityModel.Tokens.X509SecurityKey(cert));
+            //    }
+            //}
         }
 
         public void Configure(IApplicationBuilder app)
