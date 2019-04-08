@@ -80,7 +80,7 @@ namespace IdApi
             try
             {
 
-                using (X509Store certStore = new X509Store(StoreName.My, StoreLocation.CurrentUser))
+                using (X509Store certStore = new X509Store(StoreName.My, StoreLocation.LocalMachine))
                 {
                     certStore.Open(OpenFlags.ReadOnly);
 
