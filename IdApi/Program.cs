@@ -4,10 +4,12 @@
 
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 using System;
+using System.IO;
 
 namespace IdApi
 {
@@ -48,6 +50,11 @@ namespace IdApi
         {
             return WebHost.CreateDefaultBuilder(args)
                     .UseStartup<Startup>()
+                    .ConfigureAppConfiguration((hostingContext, config) =>
+                    {
+                        config.SetBasePath(Directory.GetCurrentDirectory());
+                        config.AddJsonFile("appconnections.json", true);
+                    })
                     .UseSerilog();
         }
     }

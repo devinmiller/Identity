@@ -1,13 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <UserSecretsId>b816500d-3c5f-4a9b-835c-af3dc3b1554a</UserSecretsId>
   </PropertyGroup>
   
   <ItemGroup>
+    <PackageReference Include="IdentityServer4.EntityFramework" Version="2.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="IdentityServer4" Version="2.3.0" />
+    <PackageReference Include="IdentityServer4" Version="2.4.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.4" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="5.4.0" />
 
     <PackageReference Include="Serilog" Version="2.7.1" />

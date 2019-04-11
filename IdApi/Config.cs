@@ -3,6 +3,7 @@
 
 
 using IdentityServer4.Models;
+using IdentityServer4.Test;
 using System.Collections.Generic;
 
 namespace IdApi
@@ -25,6 +26,11 @@ namespace IdApi
         public static IEnumerable<Client> GetClients()
         {
             return new Client[] { };
+        }
+
+        public static List<TestUser> GetUsers()
+        {
+            return new List<TestUser>();
         }
     }
 }

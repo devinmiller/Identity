@@ -3,9 +3,11 @@
 
 
 using System;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -31,10 +33,28 @@ namespace IdApi
             // uncomment, if you wan to add an MVC-based UI
             //services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_1);
 
+            string migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            string identityConnection = Configuration.GetConnectionString("IdentityConnection");
+
             var builder = services.AddIdentityServer()
-                .AddInMemoryIdentityResources(Config.GetIdentityResources())
-                .AddInMemoryApiResources(Config.GetApis())
-                .AddInMemoryClients(Config.GetClients());
+                .AddTestUsers(Config.GetUsers())
+                // this adds the config data from DB (clients, resources)
+                .AddConfigurationStore(options =>
+                {
+                    options.ConfigureDbContext = b =>
+                        b.UseSqlServer(identityConnection,
+                            sql => sql.MigrationsAssembly(migrationsAssembly));
+                })
+                // this adds the operational data from DB (codes, tokens, consents)
+                .AddOperationalStore(options =>
+                {
+                    options.ConfigureDbContext = b =>
+                        b.UseSqlServer(identityConnection,
+                            sql => sql.MigrationsAssembly(migrationsAssembly));
+
+                    // this enables automatic token cleanup. this is optional.
+                    options.EnableTokenCleanup = true;
+                });
 
             if (Environment.IsDevelopment())
             {
