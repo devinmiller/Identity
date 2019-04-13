@@ -34,9 +34,6 @@ namespace IdApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // uncomment, if you wan to add an MVC-based UI
-            services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_1);
-
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("IdentityConnection")));
 
@@ -44,11 +41,6 @@ namespace IdApi
                 .AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-
-            //services
-            //    .AddDefaultIdentity<IdentityUser>()
-            //    .AddDefaultUI(UIFramework.Bootstrap4)
-            //    .AddEntityFrameworkStores<ApplicationDbContext>();
 
             string migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             string identityConnection = Configuration.GetConnectionString("IdentityConnection");
@@ -85,7 +77,7 @@ namespace IdApi
 
                 if (cert == null)
                 {
-                    builder.AddDeveloperSigningCredential();
+                    throw new Exception("Unable to load token signing credential.");
                 }
                 else
                 {
@@ -96,6 +88,8 @@ namespace IdApi
             }
 
             services.AddAuthentication();
+
+            services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2);
         }
 
         public void Configure(IApplicationBuilder app)
@@ -105,13 +99,9 @@ namespace IdApi
                 app.UseDeveloperExceptionPage();
             }
 
-            // uncomment if you want to support static files
             app.UseStaticFiles();
-
             app.UseIdentityServer();
-
-            // uncomment, if you wan to add an MVC-based UI
-            app.UseMvcWithDefaultRoute();
+            app.UseMvc();
         }
 
         private X509Certificate2 GetCertificate()
