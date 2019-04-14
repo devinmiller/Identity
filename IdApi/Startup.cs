@@ -10,7 +10,6 @@ using IdApi.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,37 +41,75 @@ namespace IdApi
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            string migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-            string identityConnection = Configuration.GetConnectionString("IdentityConnection");
+            services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2);
 
-            var builder = services.AddIdentityServer()
-                .AddTestUsers(Config.GetUsers())
-                // this adds the config data from DB (clients, resources)
-                .AddConfigurationStore(options =>
-                {
-                    options.ConfigureDbContext = b =>
-                        b.UseSqlServer(identityConnection,
-                            sql => sql.MigrationsAssembly(migrationsAssembly));
-                })
-                // this adds the operational data from DB (codes, tokens, consents)
-                .AddOperationalStore(options =>
-                {
-                    options.ConfigureDbContext = b =>
-                        b.UseSqlServer(identityConnection,
-                            sql => sql.MigrationsAssembly(migrationsAssembly));
+            ConfigureIdentityServer(services);
 
-                    // this enables automatic token cleanup. this is optional.
-                    options.EnableTokenCleanup = true;
-                })
-                // this configures IdentityServer to use the ASP.NET Identity implementations
-                .AddAspNetIdentity<ApplicationUser>();
+            services.AddAuthentication();
+        }
 
+        public void Configure(IApplicationBuilder app)
+        {
             if (Environment.IsDevelopment())
             {
-                builder.AddDeveloperSigningCredential();
+                app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
             }
             else
             {
+                app.UseExceptionHandler("/Error");
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseIdentityServer();
+            app.UseMvc();
+        }
+
+        private void ConfigureIdentityServer(IServiceCollection services)
+        {
+            var builder = services.AddIdentityServer(options =>
+            {
+                options.Events.RaiseErrorEvents = true;
+                options.Events.RaiseInformationEvents = true;
+                options.Events.RaiseFailureEvents = true;
+                options.Events.RaiseSuccessEvents = true;
+            });
+
+            if(Environment.IsDevelopment())
+            {
+                builder.AddDeveloperSigningCredential();
+
+                builder
+                    .AddInMemoryIdentityResources(Config.GetIdentityResources())
+                    .AddInMemoryApiResources(Config.GetApis())
+                    .AddInMemoryClients(Config.GetClients());
+            }
+            else
+            {
+                string migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+                string identityConnection = Configuration.GetConnectionString("IdentityConnection");
+
+                builder
+                    // this adds the config data from DB (clients, resources)
+                    .AddConfigurationStore(options =>
+                     {
+                         options.ConfigureDbContext = b =>
+                             b.UseSqlServer(identityConnection,
+                                 sql => sql.MigrationsAssembly(migrationsAssembly));
+                     })
+                    // this adds the operational data from DB (codes, tokens, consents)
+                    .AddOperationalStore(options =>
+                    {
+                        options.ConfigureDbContext = b =>
+                            b.UseSqlServer(identityConnection,
+                                sql => sql.MigrationsAssembly(migrationsAssembly));
+
+                        // this enables automatic token cleanup. this is optional.
+                        options.EnableTokenCleanup = true;
+                    });
+
                 X509Certificate2 cert = GetCertificate();
 
                 if (cert == null)
@@ -83,25 +120,13 @@ namespace IdApi
                 {
                     builder.AddSigningCredential(cert);
 
+                    //TODO: Implement certificate rollover
                     //builder.AddValidationKeys(new Microsoft.IdentityModel.Tokens.X509SecurityKey(cert));
                 }
             }
 
-            services.AddAuthentication();
-
-            services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2);
-        }
-
-        public void Configure(IApplicationBuilder app)
-        {
-            if (Environment.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
-            app.UseStaticFiles();
-            app.UseIdentityServer();
-            app.UseMvc();
+            // this configures IdentityServer to use the ASP.NET Identity implementations
+            builder.AddAspNetIdentity<ApplicationUser>();
         }
 
         private X509Certificate2 GetCertificate()
