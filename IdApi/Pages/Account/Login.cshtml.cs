@@ -8,12 +8,14 @@ using IdentityServer4.Models;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace IdApi.Pages.Account
 {
+    [AllowAnonymous]
     public class LoginModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -39,7 +41,6 @@ namespace IdApi.Pages.Account
             _events = events;
         }
 
-        [BindProperty(SupportsGet = true)]
         public string ReturnUrl { get; set; }
 
         public bool AllowRememberLogin { get; set; } = true;

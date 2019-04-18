@@ -30,7 +30,6 @@ namespace IdApi.Pages.Account
             _events = events;
         }
 
-        [BindProperty(SupportsGet = true)]
         public string LogoutId { get; set; }
 
         public string PostLogoutRedirectUri { get; set; }
@@ -75,11 +74,11 @@ namespace IdApi.Pages.Account
             // get context information (client name, post logout redirect URI and iframe for federated signout)
             var logout = await _interaction.GetLogoutContextAsync(logoutId);
 
-
             AutomaticRedirectAfterSignOut = AccountOptions.AutomaticRedirectAfterSignOut;
             PostLogoutRedirectUri = logout?.PostLogoutRedirectUri;
             ClientName = string.IsNullOrEmpty(logout?.ClientName) ? logout?.ClientId : logout?.ClientName;
             SignOutIframeUrl = logout?.SignOutIFrameUrl;
+            LogoutId = logoutId;
 
             if (User?.Identity.IsAuthenticated == true)
             {

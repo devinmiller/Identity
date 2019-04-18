@@ -22,7 +22,6 @@ namespace IdApi.Pages.Account
             _interaction = interaction;
         }
 
-        [BindProperty(SupportsGet = true)]
         public string LogoutId { get; set; }
 
         public bool ShowLogoutPrompt { get; set; }
