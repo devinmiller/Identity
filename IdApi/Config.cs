@@ -105,21 +105,22 @@ namespace IdApi
                     AllowAccessTokensViaBrowser = true,
 
                     RequireClientSecret = false,
+                    RequireConsent = false,
                     RequirePkce = true,
 
                     RedirectUris =
                     {
-
+                        "http://localhost:4200/auth/callback"
                     },
 
                     PostLogoutRedirectUris  =
                     {
-
+                        "http://localhost:4200/"
                     },
 
                     AllowedCorsOrigins =
                     {
-
+                        "http://localhost:4200/"
                     },
 
                     AllowedScopes = { "openid", "profile" }
