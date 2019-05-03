@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IdApi.Helpers;
 using IdApi.Models;
 using IdentityServer4.Events;
 using IdentityServer4.Models;
@@ -84,6 +85,14 @@ namespace IdApi.Pages.Account
                     // this will send back an access denied OIDC error response to the client.
                     await _interaction.GrantConsentAsync(context, ConsentResponse.Denied);
 
+                    // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
+                    if (await _clientStore.IsPkceClientAsync(context.ClientId))
+                    {
+                        // if the client is PKCE then we assume it's native, so this change in how to
+                        // return the response is for better UX for the end user.
+                        return RedirectToPage("./Redirect", new { RedirectUrl = ReturnUrl });
+                    }
+
                     return Redirect(Input.ReturnUrl);
                 }
                 else
@@ -101,6 +110,19 @@ namespace IdApi.Pages.Account
                     var user = await _userManager.FindByNameAsync(Input.Username);
 
                     await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName));
+
+                    if (context != null)
+                    {
+                        if (await _clientStore.IsPkceClientAsync(context.ClientId))
+                        {
+                            // if the client is PKCE then we assume it's native, so this change in how to
+                            // return the response is for better UX for the end user.
+                            return RedirectToPage("./Redirect", new { RedirectUrl = Input.ReturnUrl });
+                        }
+
+                        // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
+                        return Redirect(Input.ReturnUrl);
+                    }
 
                     // request for a local page
                     if (Url.IsLocalUrl(Input.ReturnUrl))

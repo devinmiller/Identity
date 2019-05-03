@@ -93,6 +93,37 @@ namespace IdApi
                     AllowedCorsOrigins = { "http://localhost:5002" },
 
                     AllowedScopes = { "openid", "profile", "api1" }
+                },
+
+                new Client
+                {
+                    ClientId = "wex",
+                    ClientName = "Watch Exchange Client",
+                    ClientUri = "",
+
+                    AllowedGrantTypes = GrantTypes.Code,
+                    AllowAccessTokensViaBrowser = true,
+
+                    RequireClientSecret = false,
+                    RequireConsent = false,
+                    RequirePkce = true,
+
+                    RedirectUris =
+                    {
+                        "http://localhost:4200/auth/callback"
+                    },
+
+                    PostLogoutRedirectUris  =
+                    {
+                        "http://localhost:4200/"
+                    },
+
+                    AllowedCorsOrigins =
+                    {
+                        "http://localhost:4200/"
+                    },
+
+                    AllowedScopes = { "openid", "profile" }
                 }
             };
         }
