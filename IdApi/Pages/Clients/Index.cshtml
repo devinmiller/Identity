@@ -1,0 +1,41 @@
+﻿@page
+@model IdApi.Pages.Clients.IndexModel
+
+<div class="client-list-page">
+    <div class="page-header">
+        <h1>Clients</h1>
+    </div>
+    <p>
+        <a asp-page="Create">Create New</a>
+    </p>
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Uri</th>
+                    <th>Enabled</th>
+                    <th>Secret</th>
+                    <th>Conset</th>
+                    <th>PKCE</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if(Model.Clients.Any())
+                {
+
+                }
+                else
+                {
+                    <tr>
+                        <td class="bg-info" colspan="7">
+                            <span class="no-results">No clients have been added!</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

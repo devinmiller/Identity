@@ -81,34 +81,13 @@ namespace IdApi
             {
                 builder.AddDeveloperSigningCredential();
 
-                builder
-                    .AddInMemoryIdentityResources(Config.GetIdentityResources())
-                    .AddInMemoryApiResources(Config.GetApis())
-                    .AddInMemoryClients(Config.GetClients());
+                //builder
+                //    .AddInMemoryIdentityResources(Config.GetIdentityResources())
+                //    .AddInMemoryApiResources(Config.GetApis())
+                //    .AddInMemoryClients(Config.GetClients());
             }
             else
             {
-                string migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-                string identityConnection = Configuration.GetConnectionString("IdentityConnection");
-
-                builder
-                    // this adds the config data from DB (clients, resources)
-                    .AddConfigurationStore(options =>
-                     {
-                         options.ConfigureDbContext = b =>
-                             b.UseSqlServer(identityConnection,
-                                 sql => sql.MigrationsAssembly(migrationsAssembly));
-                     })
-                    // this adds the operational data from DB (codes, tokens, consents)
-                    .AddOperationalStore(options =>
-                    {
-                        options.ConfigureDbContext = b =>
-                            b.UseSqlServer(identityConnection,
-                                sql => sql.MigrationsAssembly(migrationsAssembly));
-
-                        // this enables automatic token cleanup. this is optional.
-                        options.EnableTokenCleanup = true;
-                    });
 
                 X509Certificate2 cert = GetCertificate();
 
@@ -124,6 +103,28 @@ namespace IdApi
                     //builder.AddValidationKeys(new Microsoft.IdentityModel.Tokens.X509SecurityKey(cert));
                 }
             }
+
+            string migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            string identityConnection = Configuration.GetConnectionString("IdentityConnection");
+
+            builder
+                // this adds the config data from DB (clients, resources)
+                .AddConfigurationStore(options =>
+                {
+                    options.ConfigureDbContext = b =>
+                            b.UseSqlServer(identityConnection,
+                                sql => sql.MigrationsAssembly(migrationsAssembly));
+                })
+                // this adds the operational data from DB (codes, tokens, consents)
+                .AddOperationalStore(options =>
+                {
+                    options.ConfigureDbContext = b =>
+                        b.UseSqlServer(identityConnection,
+                            sql => sql.MigrationsAssembly(migrationsAssembly));
+
+                        // this enables automatic token cleanup. this is optional.
+                        options.EnableTokenCleanup = true;
+                });
 
             // this configures IdentityServer to use the ASP.NET Identity implementations
             builder.AddAspNetIdentity<ApplicationUser>();
