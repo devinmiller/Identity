@@ -3,14 +3,13 @@
 
 <div class="client-create-page">
     <div class="page-header">
-        <h1>Create</h1>
+        <h1>Create a New Client</h1>
     </div>
     <partial name="_ValidationSummary" />
     <div class="row">
-        <div class="col-md-4">
-            <form method="post">
-                <h4>Create a new client.</h4>
-                <hr />
+        <form method="post">
+            <div class="col-md-4">
+
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -26,15 +25,31 @@
                             <span asp-validation-for="Input.ClientName" class="text-danger"></span>
                         </div>
                     </div>
-                </div>                
-                <div class="form-group">
-                    <label asp-for="Input.ClientUri"></label>
-                    <input asp-for="Input.ClientUri" class="form-control" />
-                    <span asp-validation-for="Input.ClientUri" class="text-danger"></span>
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-        </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label asp-for="Input.ClientUri"></label>
+                            <input asp-for="Input.ClientUri" class="form-control" />
+                            <span asp-validation-for="Input.ClientUri" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>URI</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
     </div>
 </div>
 
