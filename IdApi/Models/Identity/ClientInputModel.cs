@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IdentityServer4.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,13 +16,13 @@ namespace IdApi.Models.Identity
         [Display(Name = "Client URI")]
         public string ClientUri { get; set; }
 
-        [Display(Name = "Redirect URIs")]
-        public List<string> RedirectUris { get; set; }
+        [Display(Name = "Login URI")]
+        public string RedirectUri { get; set; }
+        [Display(Name = "Logout URI")]
+        public string PostLogoutRedirectUri { get; set; }
+        [Display(Name = "CORS Origin")]
+        public string AllowedCorsOrigin { get; set; }
 
-        [Display(Name = "Logout URIs")]
-        public List<string> PostLogoutRedirectUris { get; set; }
-
-        [Display(Name = "CORS Origins")]
-        public List<string> AllowedCorsOrigins { get; set; }
+        public GrantTypes GrantType { get; set; }
     }
 }

@@ -19,6 +19,18 @@ namespace IdApi.Pages.Clients
             Input = new ClientInputModel();
         }
 
+        public IActionResult OnPostAsync(string button)
+        {
+            return Page();
+        }
+
+        public IActionResult OnPostAddLogin(ClientInputModel model)
+        {
+            
+
+            return Page();
+        }
+
         [BindProperty]
         public ClientInputModel Input { get; set; }
     }

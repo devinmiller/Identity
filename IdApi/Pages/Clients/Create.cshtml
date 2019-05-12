@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{handler?}"
 @model IdApi.Pages.Clients.CreateModel
 
 <div class="client-create-page">
@@ -6,50 +6,66 @@
         <h1>Create a New Client</h1>
     </div>
     <partial name="_ValidationSummary" />
-    <div class="row">
-        <form method="post">
-            <div class="col-md-4">
+    <div class="row mt-5">
+        <div class="col">
+            <form method="post">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Input.ClientId"></label>
+                                    <input asp-for="Input.ClientId" class="form-control" />
+                                    <span asp-validation-for="Input.ClientId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Input.ClientName"></label>
+                                    <input asp-for="Input.ClientName" class="form-control" />
+                                    <span asp-validation-for="Input.ClientName" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label asp-for="Input.ClientUri"></label>
+                                    <input asp-for="Input.ClientUri" class="form-control" />
+                                    <span asp-validation-for="Input.ClientUri" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label asp-for="Input.RedirectUri"></label>
+                                    <input asp-for="Input.RedirectUri" class="form-control" />
+                                    <span asp-validation-for="Input.RedirectUri" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Input.PostLogoutRedirectUri"></label>
+                                    <input asp-for="Input.PostLogoutRedirectUri" class="form-control" />
+                                    <span asp-validation-for="Input.PostLogoutRedirectUri" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Input.AllowedCorsOrigin"></label>
+                                    <input asp-for="Input.AllowedCorsOrigin" class="form-control" />
+                                    <span asp-validation-for="Input.AllowedCorsOrigin" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="Input.ClientId"></label>
-                            <input asp-for="Input.ClientId" class="form-control" />
-                            <span asp-validation-for="Input.ClientId" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="Input.ClientName"></label>
-                            <input asp-for="Input.ClientName" class="form-control" />
-                            <span asp-validation-for="Input.ClientName" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label asp-for="Input.ClientUri"></label>
-                            <input asp-for="Input.ClientUri" class="form-control" />
-                            <span asp-validation-for="Input.ClientUri" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="row">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>URI</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <button name="button" type="submit" class="btn btn-secondary" value="AddLogin">One Submit</button>
+                <button name="button" type="submit" class="btn btn-secondary" value="AddLogout">Two Submit</button>
+            </form>
+        </div>
+        
     </div>
 </div>
 
